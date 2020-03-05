@@ -21,29 +21,29 @@ namespace PlayFab.Samples
         public static string TitleId => Environment.GetEnvironmentVariable(_titleId, EnvironmentVariableTarget.Process);
         public static string TitleSecret => Environment.GetEnvironmentVariable(_titleSecret, EnvironmentVariableTarget.Process);
     }
-    
-    public class TestObject
-    {
-        public string Name { get; set; }
-    }
 
     public static class HelloWorld
     {
         [FunctionName("HelloWorld")]
         public static async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] FunctionExecutionContext<TestObject> req,
+            [HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] FunctionExecutionContext<dynamic> req,
             HttpRequest httpRequest,
             ILogger log)
         {
             log.LogInformation("C# HTTP trigger function processed a request.");
 
-            string name = req.FunctionArgument.Name;
+            dynamic args = req.FunctionArgument;
+            dynamic name = null;
+            if(args != null && args["name"] != null)
+            {
+                name = args["name"];
+            }
 
             string requestBody = await new StreamReader(httpRequest.Body).ReadToEndAsync();
             dynamic data = JsonConvert.DeserializeObject(requestBody);
             name = name ?? data?.name;
 
-            string responseMessage = string.IsNullOrEmpty(name)
+            string responseMessage = Object.ReferenceEquals(null, name)
                 ? "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response."
                 : $"Hello, {name}. PlayFab.TitleId:{Settings.TitleId}, PlayFab.TitleSecret:{Settings.TitleSecret}, PlayFab.Cloud:{Settings.Cloud}";
 
