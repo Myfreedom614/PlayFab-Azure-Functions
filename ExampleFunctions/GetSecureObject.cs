@@ -29,7 +29,8 @@ namespace PlayFab.IntegrationTests
             var titleSettings = new PlayFabApiSettings
             {
                 TitleId = req.TitleAuthenticationContext.Id,
-                VerticalName = Settings.Cloud
+                //VerticalName = Settings.Cloud
+                DeveloperSecretKey = Settings.TitleSecret
             };
 
             var titleAuthContext = new PlayFabAuthenticationContext();
