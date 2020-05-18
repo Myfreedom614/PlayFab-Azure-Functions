@@ -8,6 +8,7 @@ namespace PlayFab.IntegrationTests
     using Microsoft.Extensions.Logging;
     using Newtonsoft.Json;
     using System.Threading.Tasks;
+    using PlayFab.Samples;
 
     public static class IdentityArrayTask
     {

@@ -11,6 +11,7 @@ namespace PlayFab.IntegrationTests
     using System;
     using System.Diagnostics;
     using System.Threading.Tasks;
+    using PlayFab.Samples;
 
     public static class GetSecureObjectPlayStream
     {

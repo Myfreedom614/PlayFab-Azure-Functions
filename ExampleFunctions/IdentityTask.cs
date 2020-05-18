@@ -7,6 +7,7 @@ namespace PlayFab.IntegrationTests
     using Microsoft.Azure.WebJobs.Extensions.Http;
     using Microsoft.Extensions.Logging;
     using System.Threading.Tasks;
+    using PlayFab.Samples;
 
     public static class IdentityTask
     {

@@ -7,13 +7,14 @@ namespace PlayFab.IntegrationTests
     using Microsoft.Azure.WebJobs.Extensions.Http;
     using Microsoft.Extensions.Logging;
     using Newtonsoft.Json;
-    using PlayFab.ServerModels;
+    using PlayFab.CloudScriptModels;
     using System.Threading.Tasks;
+    using PlayFab.Samples;
 
     public static class ReturnProfilePlayStream
     {
         [FunctionName("ReturnProfilePlayStream")]
-        public static async Task<PlayerProfile> Run(
+        public static async Task<PlayerProfileModel> Run(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] PlayerPlayStreamFunctionExecutionContext req,
             HttpRequest httpRequest,
             ILogger log)

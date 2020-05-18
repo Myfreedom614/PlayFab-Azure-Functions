@@ -8,6 +8,7 @@ namespace PlayFab.IntegrationTests
     using Newtonsoft.Json;
     using PlayFab.CloudScriptModels;
     using PlayFab.Internal;
+    using PlayFab.Samples;
 
     public class HelperFunctions
     {
@@ -96,8 +97,8 @@ namespace PlayFab.IntegrationTests
                     Id = ctx.CallerEntityProfile.Entity.Id,
                     Type = ctx.CallerEntityProfile.Entity.Type
                 },
-                CallerEntityProfile = ctx.CallerEntityProfile,
-                PlayStreamEvent = ctx.PlayStreamEvent,
+                //CallerEntityProfile = ctx.CallerEntityProfile,
+                //PlayStreamEvent = ctx.PlayStreamEvent,
                 FunctionResult = new ExecuteFunctionResult
                 {
                     ExecutionTimeMilliseconds = executionTime,

@@ -7,6 +7,7 @@ namespace PlayFab.IntegrationTests
     using Microsoft.Azure.WebJobs;
     using Microsoft.Extensions.Logging;
     using Newtonsoft.Json;
+    using PlayFab.Samples;
 
     public static class IdentityQueuedTask
     {

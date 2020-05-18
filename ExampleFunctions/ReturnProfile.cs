@@ -9,6 +9,7 @@ namespace PlayFab.IntegrationTests
     using Newtonsoft.Json;
     using PlayFab.ProfilesModels;
     using System.Threading.Tasks;
+    using PlayFab.Samples;
 
     public static class ReturnProfile
     {
