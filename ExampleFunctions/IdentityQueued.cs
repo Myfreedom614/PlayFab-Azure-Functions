@@ -15,7 +15,7 @@ namespace PlayFab.IntegrationTests
 
         [FunctionName("IdentityQueued")]
         public static async Task Run(
-            [QueueTrigger("identity", Connection = "QueueStorage")] string msg,
+            [QueueTrigger("identity", Connection = "AzureWebJobsStorage")] string msg,
             ILogger log)
         {
             Stopwatch sw = Stopwatch.StartNew();
