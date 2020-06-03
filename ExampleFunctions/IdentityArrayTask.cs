@@ -21,6 +21,7 @@ namespace PlayFab.IntegrationTests
             log.LogInformation($"HTTP POST Body: {body}");
 
             ScheduledTaskFunctionExecutionContext<object[]> req = JsonConvert.DeserializeObject<ScheduledTaskFunctionExecutionContext<object[]>>(body);
+            log.LogInformation($"ScheduledTaskFunctionExecutionContext: {JsonConvert.SerializeObject(req)}");
 
             return await Task.FromResult(req.FunctionArgument);
         }
