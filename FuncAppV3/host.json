@@ -10,7 +10,6 @@
     },
     "extensions": {
         "queues": {
-            "maxPollingInterval": "00:00:00.500",
             "batchSize": 32,
             "newBatchThreshold": 16
         }
