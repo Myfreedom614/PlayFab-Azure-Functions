@@ -1,35 +1,34 @@
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Extensions.Http;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Text;
 using System.Net.Http;
 using System;
 using System.Linq;
-
+ 
 namespace PlayFab.Samples
 {
-    public static class MatchFoundHttpTriggerTest
+    public static class MatchFoundQueueTriggerTest
     {
-        [FunctionName("MatchFoundHttpTriggerTest")]
-        public static async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)] HttpRequest req,
+        [FunctionName("MatchFoundQueueTriggerTest")]
+        public static async Task Run(
+            [QueueTrigger("matchqueue", Connection = "AzureWebJobsStorage")] string req,
             ILogger log)
         {
-            log.LogInformation($"{nameof(MatchFoundHttpTriggerTest)} C# HTTP trigger function processed a request.");
+            Stopwatch sw = Stopwatch.StartNew();
+            object result = null;
+            log.LogInformation($"{nameof(MatchFoundQueueTriggerTest)} C# queue trigger function processed a request; {req}");
 
-            var reqStr = await req.ReadAsStringAsync();
-            var context = JsonConvert.DeserializeObject<dynamic>(reqStr);
+            var ctx = JsonConvert.DeserializeObject<dynamic>(req);
             
-            var msg = $"context is {JsonConvert.SerializeObject(context)}\n";
+            var msg = $"context is {JsonConvert.SerializeObject(ctx)}\n";
             log.LogInformation($"{msg}");
             
-            var authCtx = context?.TitleAuthenticationContext;
-            var payload = context?.PlayStreamEvent?.Payload;
+            var authCtx = ctx?.TitleAuthenticationContext;
+            var payload = ctx?.PlayStreamEvent?.Payload;
 
             if(payload != null && authCtx != null){
                 var titleId = authCtx?.Id;
@@ -55,10 +54,15 @@ namespace PlayFab.Samples
 
                 matchIPs.ForEach(x => { SendToMatchServerRequest(x, "9000", Convert.ToString(matchId), Convert.ToString(queueName), log); });
 
-                return (ActionResult)new OkObjectResult($"Success");
+                result =  new {Status = "OK", Message = "Success"};
+            }
+            else {
+                result =  new {Status = "BadRequest", Message = "Authentication Context or PlayStream Payload is missing"};
             }
             
-            return (ActionResult)new BadRequestObjectResult($"Authentication Context or PlayStream Payload is missing");
+            // Post results
+            FunctionExecutionContext ctx2 = JsonConvert.DeserializeObject<FunctionExecutionContext>(req);
+            await PostFunctionResultToPlayFab(ctx2, result, sw.ElapsedMilliseconds, log);
         }
 
         static async Task<dynamic> GetMatchRequest(string titleId, string eToken,string matchId, string queueName, ILogger log){
@@ -102,6 +106,14 @@ namespace PlayFab.Samples
 
                 string result = response.Content.ReadAsStringAsync().Result;
                 log.LogInformation($"Response from {matchFoundUrl}:\n{result}");
+            }
+        }
+
+        private static async Task PostFunctionResultToPlayFab(FunctionExecutionContext ctx, object result, long executionTime, ILogger log)
+        {
+            if(ctx.GeneratePlayStreamEvent.HasValue && ctx.GeneratePlayStreamEvent.Value)
+            {
+                await HelperFunctions.PostResults(ctx, nameof(MatchFoundQueueTriggerTest), result, (int)executionTime, log);
             }
         }
     }
