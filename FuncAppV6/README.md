@@ -1,4 +1,10 @@
-# FuncAppV3
+# FuncAppV6
+
+## .csproj
+```xml
+<TargetFramework>net6.0</TargetFramework>
+<AzureFunctionsVersion>v4</AzureFunctionsVersion>
+```
 
 ## HelloWorld Sample Request
 
@@ -7,7 +13,7 @@ Body:
 
 ```Json
 {
-  "FunctionName": "HelloWorldV3",
+  "FunctionName": "HelloWorldV6",
   "FunctionParameter": {
     "inputValue": "Franklin"
   },
